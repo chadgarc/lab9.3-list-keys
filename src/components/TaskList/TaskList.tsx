@@ -10,6 +10,7 @@ export function TaskList({
 
     const handleStatusChange = (id: string, newStatus: TaskStatus) => {
         onStatusChange(id, newStatus);
+        console.log(tasks)
     }
 
     const handleDelete = (id: string) => {
