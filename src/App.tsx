@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import type { Task } from './types'
+import type { Task, TaskStatus } from './types'
 import { TaskList } from './components/TaskList/TaskList'
 
 function App() {
@@ -47,20 +47,24 @@ function App() {
     }
   ])
 
-  const handleStatusChange = () => {
-
+  const updateStatusChange = (id: string, newStatus: TaskStatus) => {
+    setTasks(previusTask =>
+      previusTask.map(task => task.id === id ? { ...task, status: newStatus } : task )
+    )
   }
 
-  const handleOnDelete = () => {
-
+  const deleteTask = (id: string) => {
+    setTasks(previusTask =>
+      previusTask.filter(task => task.id !== id)
+    )
   }
 
   return (
     <>
       <TaskList
       tasks={tasks}
-      onStatusChange={handleStatusChange}
-      onDelete={handleOnDelete}
+      onStatusChange={updateStatusChange}
+      onDelete={deleteTask}
       />
     </>
   )
