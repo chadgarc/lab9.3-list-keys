@@ -57,7 +57,7 @@ App
 
 ### SelectList
 
-- Generic <select> component
+- Generic `<select>` component
 - Works with any type (T)
 - Converts values to/from strings
 
@@ -203,3 +203,129 @@ setTasks(prev =>
   )
 );
 ```
+
+## ❗ Why { ...task, status: newStatus }?
+
+Because React requires immutable updates.
+
+- `...task` copies the entire object
+- `status: newStatus` overwrites only the status
+- A new object is created
+- React detects the change and re-renders
+
+If you mutated the object directly, React would NOT detect the change
+
+## 🎚️ 6. Full Flow: Filters
+
+Filters are confusing because:
+
+- Each dropdown only updates one part of the filter
+- The filter state must be merged
+- The filter function must handle undefined values
+
+### Step 1: User selects a filter
+
+In TaskFilter:
+
+```ts
+onFilterChange({
+  status: value === 'all-stats' ? undefined : value as TaskStatus
+});
+```
+
+or
+
+```ts
+onFilterChange({
+  priority: value === 'all-priorities' ? undefined : value as Priority
+});
+```
+
+### Step 2: TaskFilter → App
+
+In App:
+
+``` ts
+const handleFilter = (filter) => {
+  setFilters(prev => ({ ...prev, ...filter }));
+};
+```
+
+### ❗ Why { ...prev, ...filter }?
+
+Because each dropdown only updates one field:
+
+- status dropdown → { status: ... }
+- priority dropdown → { priority: ... }
+
+If we didn’t use spread:
+
+- changing status would erase priority
+- changing priority would erase status
+- Spread merges the new filter with the old one.
+
+### Step 3: App filters tasks
+
+``` ts
+const filteredTasks = tasks.filter(task => {
+  const statusMatch = !filters.status || task.status === filters.status;
+  const priorityMatch = !filters.priority || task.priority === filters.priority;
+  return statusMatch && priorityMatch;
+});
+```
+
+### Step 4: TaskList receives filtered tasks
+
+Only tasks that match both filters are shown.
+
+## 🧠 7. Why Spread Operators Are Necessary
+
+{ ...task, status: newStatus }
+Creates a new task object with updated status.
+
+{ ...prevFilter, ...filter }
+Creates a new filter object merging old + new values.
+
+Without spreads:
+
+- React wouldn’t detect changes
+- Filters would overwrite each other
+- Tasks would mutate incorrectly
+
+Spread operators are essential for immutable state updates.
+
+## 🧩 8. Summary of How Everything Works Together
+
+### Delete Flow
+TaskItem → TaskList → App → setTasks → re-render
+
+### Status Change Flow
+SelectList → TaskItem → TaskList → App → setTasks → re-render
+
+### Filter Flow
+SelectList → TaskFilter → App → setFilters → filteredTasks() → TaskList → re-render
+
+### Types
+Define the shape of data and enforce correctness.
+
+### Spread Operators
+Ensure immutable updates.
+
+### Event Handlers
+Send actions upward.
+
+### e.target.value
+Bridge between HTML strings and typed values.
+
+## Reflection Questions
+### How did you ensure unique keys for your list items?
+Each task has a unique id, and the key prop uses that value to identify list items. This guarantees React can track each element correctly during rendering.
+
+### What considerations did you make when implementing the filtering functionality?
+I reused the same SelectList component that was originally built for choosing task priority. This made the filtering UI consistent and easier to maintain. The only thing that changed was the filtering logic itself. I also ensured that both filters (status and priority) could work together at the same time without interfering with each other.
+
+### How did you handle state updates for task status changes?
+I used useState, where the first value is the current state and the second is the setter function. Inside the setter, I used .map() to update only the specific task that needed its status changed, or .filter() when removing tasks. This creates a new list each time, which React requires for proper state updates.
+
+### What challenges did you face when implementing conditional rendering?
+The filtering feature required a lot of thought and several iterations. Building the filter component and making sure it interacted correctly with the rest of the app was not easy. Even now, it still takes me a moment to fully understand the logic when I revisit it. With more practice, this part will become more intuitive.
