@@ -51,15 +51,6 @@ export function TaskItem({
                 </div>
                 
             </section>
-            
-            {/* <select defaultValue={task.status}
-                    className="select ms-auto text-wrap w-35 select-neutral bg-gray-300 text-black "
-                    onChange={(e) => onStatusChange(task.id, e.target.value as TaskStatus)}
-                    >
-                <option value={'pending'}>Pending</option>
-                <option value={'in-progress'}>In Progress</option>
-                <option value={'completed'}>Completed</option>
-            </select> */}
 
             {/*
              * Status selector for the task. Uses the reusable SelectList

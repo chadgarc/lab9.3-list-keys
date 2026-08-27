@@ -42,7 +42,7 @@ export function SelectList<T> ({
          * (converted to string) as the key and the actual label for display.
          */}
         {options.map( option =>
-            <option key={`${option.value}`} value={option.value as any}>{option.label}</option>
+            <option key={`${option.value}`} value={`${option.value}`}>{option.label}</option>
         )}
         </select>
     );
