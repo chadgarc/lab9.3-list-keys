@@ -1,4 +1,4 @@
-import type { SelectListProps, TaskStatus } from "../../types";
+import type { SelectListProps } from "../../types";
 
 export function SelectList<T> ({
     defaultValue,
