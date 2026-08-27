@@ -5,31 +5,33 @@ export function TaskItem({
     onStatusChange,
     onDelete}: TaskItemProps){
 
-    const statusClass = {
-        'pending': 'status-neutral',
-        'in-progress': 'status-warning',
-        'completed': 'status-success',
-        }[task.status];
+    const priorityClass = {
+        'low': 'status-info',
+        'medium': 'status-warning',
+        'high': 'status-error',
+        }[task.priority];
 
     return (
-        <li className="list-row">
-            <div>
-                <div><h2>{task.title}</h2></div>
-            </div>
+        <li className="list-col-grow sm:list-row min-h-45 ps-10 pe-10 pt-5 pb-5">
             
-            <div>
-                <p className="list-col-wrap text-xs">
-                {task.description}
-                </p>
-                <div className="flex justify-start gap-5">
-                    <div className={`status animate-bounce ${statusClass}`}></div> {task.priority}
+            <section className="flex flex-col justify-between w-120 text-wrap">
+                <div>
+                    <h2 className="text-start">{task.title}</h2>
+
+                    <p className="list-col-wrap text-start text-sm min-h-20">
+                    {task.description}
+                    </p>
+                </div>
+
+                <div className="flex justify-start gap-5 items-center">
+                    <div className={`status animate-bounce ${priorityClass}`}></div>Priority: {task.priority}
                     <p>Due: {task.dueDate}</p>
                 </div>
                 
-            </div>
+            </section>
             
             <select defaultValue={task.status}
-                    className="select"
+                    className="select ms-auto text-wrap w-35 select-neutral bg-gray-300 text-black "
                     onChange={(e) => onStatusChange(task.id, e.target.value as TaskStatus)}
                     >
                 <option value={'pending'}>Pending</option>
