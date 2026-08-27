@@ -37,7 +37,7 @@ export function TaskItem({
                 <option value={'completed'}>Completed</option>
             </select>
 
-            <button className="btn btn-error" onClick={(e) => onDelete?.(task.id)}>Delete</button>
+            <button className="btn btn-error" onClick={() => onDelete?.(task.id)}>Delete</button>
         </li>
     )
 }
