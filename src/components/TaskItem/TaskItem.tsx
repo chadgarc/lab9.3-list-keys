@@ -1,11 +1,32 @@
 import type { TaskItemProps, TaskStatus } from "../../types";
 import { SelectList } from "../SelectList/SelectList";
 
+/**
+ * Renders a single task item with its details, priority indicator,
+ * status selector, and delete action. This component does not manage
+ * state internally; instead, it delegates updates and deletions to
+ * callback functions provided by the parent component.
+ *
+ * @component
+ * @param {TaskItemProps} props - Props for the TaskItem component.
+ * @param {Task} props.task - The task data to display.
+ * @param {(taskId: string, newStatus: TaskStatus) => void} props.onStatusChange
+ *        Callback fired when the user selects a new status.
+ * @param {(taskId: string) => void} props.onDelete
+ *        Callback fired when the user deletes the task.
+ */
 export function TaskItem({
     task,
     onStatusChange,
     onDelete}: TaskItemProps){
 
+    /**
+     * Maps the task's priority to a corresponding CSS class
+     * used to visually indicate urgency.
+     *
+     * @constant
+     * @type {string}
+     */
     const priorityClass = {
         'low': 'status-info',
         'medium': 'status-warning',
@@ -30,15 +51,14 @@ export function TaskItem({
                 </div>
                 
             </section>
-            
-            {/* <select defaultValue={task.status}
-                    className="select ms-auto text-wrap w-35 select-neutral bg-gray-300 text-black "
-                    onChange={(e) => onStatusChange(task.id, e.target.value as TaskStatus)}
-                    >
-                <option value={'pending'}>Pending</option>
-                <option value={'in-progress'}>In Progress</option>
-                <option value={'completed'}>Completed</option>
-            </select> */}
+
+            {/*
+             * Status selector for the task. Uses the reusable SelectList
+             * component to allow the user to change the task's workflow state.
+             *
+             * When a new status is selected, the parent callback `onStatusChange`
+             * is invoked with the task ID and the new status value.
+             */}
             <div className="ms-auto">
                 <SelectList
                 defaultValue={task.status}
@@ -51,6 +71,10 @@ export function TaskItem({
                 />
             </div>
 
+            {/*
+             * Deletes the current task by invoking the parent callback `onDelete`.
+             * The task ID is passed upward so the parent can update its state.
+             */}
             <button className="btn btn-error" onClick={() => onDelete?.(task.id)}>Delete</button>
         </li>
     )
